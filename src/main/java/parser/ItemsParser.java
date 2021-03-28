@@ -1,4 +1,5 @@
-import java.util.HashMap;
+package parser;
+
 import java.util.Map;
 
 public interface ItemsParser {

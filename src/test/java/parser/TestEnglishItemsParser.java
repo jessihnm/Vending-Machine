@@ -1,3 +1,4 @@
+package parser;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -130,5 +131,6 @@ public class TestEnglishItemsParser {
         //Then it should be in the state END
         assertEquals(EnglishParsingState.END, parser.getCurrentState());
     }
+    // TODO: test the exceptions
 
 }

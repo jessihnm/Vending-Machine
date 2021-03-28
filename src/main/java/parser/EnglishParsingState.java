@@ -1,3 +1,5 @@
+package parser;
+
 public enum EnglishParsingState implements ParserState{
     ITEM_QTY,
     ITEM_NAME,
