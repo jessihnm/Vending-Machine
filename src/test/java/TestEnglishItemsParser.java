@@ -38,7 +38,7 @@ public class TestEnglishItemsParser {
         //When I call parse
         Map<String, Integer> items = parser.parse(data);
         //Then it should have one item
-        assertEquals(items.size(), 1);
+        assertEquals(1, items.size());
         //And it should have an iPhone
         assertEquals(items, new HashMap<String, Integer>()
         {{
@@ -57,7 +57,7 @@ public class TestEnglishItemsParser {
         //When I call parse
         Map<String, Integer> items = parser.parse(data);
         //Then it should have one item
-        assertEquals(items.size(), 1);
+        assertEquals(1, items.size());
         //And it should have a Samsung
         assertEquals(items, new HashMap<String, Integer>()
         {{
@@ -76,7 +76,7 @@ public class TestEnglishItemsParser {
         //When I call parse
         Map<String, Integer> items = parser.parse(data);
         //Then it should have two items
-        assertEquals(items.size(), 2);
+        assertEquals(2, items.size());
         //And it should have 2 iphones and 4 samsungs
         assertEquals(items, new HashMap<String, Integer>()
         {{

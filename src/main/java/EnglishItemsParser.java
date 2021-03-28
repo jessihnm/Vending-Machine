@@ -30,8 +30,6 @@ public class EnglishItemsParser implements ItemsParser {
             case MORE_ITEMS:
                 parseMoreItems(character);
                 break;
-
-
             default:
                 break;
         }
@@ -55,17 +53,24 @@ public class EnglishItemsParser implements ItemsParser {
         if (this.state != EnglishParsingState.ITEM_NAME) {
             throw new RuntimeException("Cannot parse item quantity because current state is not EXPECT_ITEM_NAME");
         }
+        if (character.equals(".")) {
+            this.state = EnglishParsingState.END;
+            addItemFromBuffer();
+            return;
+        }
         if (character.matches("[A-Za-z]")){
             this.buffer.add(character);
-        } else if (character == "."){
-            this.state = EnglishParsingState.END;
         } else {
-            String itemName = this.getBufferAsString();
-            this.items.put(itemName, this.currentQty);
-            this.currentQty = null;
-            this.buffer.clear();
+            addItemFromBuffer();
             this.state = EnglishParsingState.MORE_ITEMS;
         }
+    }
+
+    private void addItemFromBuffer() {
+        String itemName = this.getBufferAsString();
+        this.items.put(itemName, this.currentQty);
+        this.currentQty = null;
+        this.buffer.clear();
     }
 
     public String getBufferAsString() {
