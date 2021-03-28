@@ -109,4 +109,26 @@ public class TestEnglishItemsParser {
         assertEquals(EnglishParsingState.END, parser.getCurrentState());
     }
 
+    @Test
+    public void parseItemWithSpaceInTheNameShouldWork() {
+        //Given a string with 3 items "2 Pepsi, 4 Sprite, 3 Fanta."
+        String data = "2 Pepsi, 4 Sprite, 3 Coke Zero.";
+        //And and instance of EnglishItemsParser
+        EnglishItemsParser parser = new EnglishItemsParser();
+        //When I call parse
+        Map<String, Integer> items = parser.parse(data);
+        //Then it should have three items
+        assertEquals(3, items.size());
+        //And it should have 2 Pepsis, 4 Sprites and 3 Fantas
+        assertEquals(items, new HashMap<String, Integer>()
+        {{
+            // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
+            put("Pepsi", 2);
+            put("Sprite", 4);
+            put("Coke Zero", 3);
+        }});
+        //Then it should be in the state END
+        assertEquals(EnglishParsingState.END, parser.getCurrentState());
+    }
+
 }

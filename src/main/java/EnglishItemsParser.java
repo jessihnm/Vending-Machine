@@ -58,7 +58,7 @@ public class EnglishItemsParser implements ItemsParser {
             addItemFromBuffer();
             return;
         }
-        if (character.matches("[A-Za-z]")){
+        if (character.matches("[A-Za-z ]")){
             this.buffer.add(character);
         } else {
             addItemFromBuffer();
