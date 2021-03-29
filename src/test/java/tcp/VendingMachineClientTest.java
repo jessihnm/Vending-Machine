@@ -1,36 +1,36 @@
 package tcp;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import parser.EnglishDeserializationError;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class VendingMachineClientTest {
     VendingMachineServerManager server = null;
     VendingMachineClient client = null;
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         // Given I have the TCP server running
         server = new VendingMachineServerManager();
         server.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         server.stop();
     }
 
     @Test
-    public void testClientConnectsToServer() throws IOException, EnglishDeserializationError {
+    public void testClientConnectsToServer() throws IOException, EnglishDeserializationError, VendingMachineClientDisconnected {
         // Given that I have a TCP client connected to the server
         VendingMachineClient client = new VendingMachineClient("localhost", server.getPort());
 
@@ -49,7 +49,7 @@ public class VendingMachineClientTest {
     }
 
     @Test
-    public void testServerAcceptsRequestToStop() throws IOException, EnglishDeserializationError {
+    public void testServerAcceptsRequestToStop() throws IOException, EnglishDeserializationError, VendingMachineClientDisconnected {
         // Given that I have a TCP client connected to the server
         VendingMachineClient client = new VendingMachineClient("localhost", server.getPort());
 
@@ -69,10 +69,6 @@ public class VendingMachineClientTest {
         // Then the server should have stopped
         assertTrue(stopped);
 
-        // TODO: use hamcrest
-//        // When I ask the server for products it should throw an exception
-//        Map<String, Integer> products2 = client.askForProducts();
-//
-//        assertEquals(products1, new HashMap<String, Integer>());
+        //assertThrows("Client is not connected to " + client.getServerAddress(), VendingMachineClientDisconnected.class, new Runnable(){  client.askForProducts()});
     }
 }

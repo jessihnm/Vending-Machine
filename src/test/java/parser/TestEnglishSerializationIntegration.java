@@ -1,10 +1,12 @@
 package parser;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestEnglishSerializationIntegration {
     @Test
@@ -24,10 +26,10 @@ public class TestEnglishSerializationIntegration {
         //When I serialize the HashMap
         String items = serializer.serialize(products);
         //Then it should return a String "4 Sprite, 6 Coke, 2 Coke Zero."
-        Assert.assertEquals("4 Sprite, 6 Coke, 2 Coke Zero.", items);
+        assertEquals("4 Sprite, 6 Coke, 2 Coke Zero.", items);
         //And when I deserialize the String
         Map<String, Integer> result = deserializer.deserialize(items);
         //Then it should match the inital HashMap
-        Assert.assertEquals(products, result);
+        assertEquals(products, result);
     }
 }

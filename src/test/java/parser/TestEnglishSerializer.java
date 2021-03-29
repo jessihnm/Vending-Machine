@@ -1,10 +1,12 @@
 package parser;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestEnglishSerializer {
     @Test
@@ -17,7 +19,7 @@ public class TestEnglishSerializer {
         //When I serialize the HashMap
         String items = serializer.serialize(products);
         //Then it should return a String "1 Pepsi."
-        Assert.assertEquals("1 Pepsi.", items);
+        assertEquals("1 Pepsi.", items);
     }
 
     @Test
@@ -30,7 +32,7 @@ public class TestEnglishSerializer {
         //When I serialize the HashMap
         String items = serializer.serialize(products);
         //Then it should return a String "3 Pepsi."
-        Assert.assertEquals("3 Pepsi.", items);
+        assertEquals("3 Pepsi.", items);
     }
 
     @Test
@@ -43,7 +45,7 @@ public class TestEnglishSerializer {
         //When I serialize the HashMap
         String items = serializer.serialize(products);
         //Then it should return a String "4 Sprite."
-        Assert.assertEquals("4 Sprite.", items);
+        assertEquals("4 Sprite.", items);
     }
 
     @Test
@@ -58,7 +60,7 @@ public class TestEnglishSerializer {
         //When I serialize the HashMap
         String items = serializer.serialize(products);
         //Then it should return a String "4 Sprite, 6 Coke."
-        Assert.assertEquals("4 Sprite, 6 Coke.", items);
+        assertEquals("4 Sprite, 6 Coke.", items);
     }
 
     @Test
@@ -74,7 +76,7 @@ public class TestEnglishSerializer {
         //When I serialize the HashMap
         String items = serializer.serialize(products);
         //Then it should return a String "4 Sprite, 6 Coke, 2 Coke Zero."
-        Assert.assertEquals("4 Sprite, 6 Coke, 2 Coke Zero.", items);
+        assertEquals("4 Sprite, 6 Coke, 2 Coke Zero.", items);
     }
 
 }

@@ -1,12 +1,13 @@
 package parser;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestEnglishDeserializer {
     @Test
@@ -131,14 +132,13 @@ public class TestEnglishDeserializer {
         assertEquals(EnglishParsingState.END, parser.getCurrentState());
     }
 
-    @Test(expected = EnglishDeserializationError.class)
-    public void testInvalidDeserialization() throws EnglishDeserializationError {
+    @Test
+    public void testInvalidDeserialization() {
         String data = ".,";
         //And and instance of EnglishItemsParser
         EnglishDeserializer parser = new EnglishDeserializer();
-        //When I call parse
-        parser.deserialize(data);
-        // Then it should throw an exception
+        //When I call parse the it should throw an exception
+        assertThrows(EnglishDeserializationError.class, ()-> parser.deserialize(data));
     }
 
 }
