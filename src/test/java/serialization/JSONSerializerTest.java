@@ -13,7 +13,7 @@ class JSONSerializerTest {
     @Test
     void serialize() throws SerializationError {
         // Given a HashMap
-        HashMap<String, Integer> input = new HashMap<>() {{
+        HashMap<String, Integer> input = new HashMap<String, Integer>() {{
             // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
             put("Pepsi", 2);
             put("Sprite", 4);
