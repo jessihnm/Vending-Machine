@@ -2,12 +2,12 @@ package parser;
 
 import java.util.Map;
 
-public interface ItemsParser {
+public interface Deserializer {
     /**
      *
      * @return a HashMap parse of items by name
      */
-    public Map<String, Integer> parse(String data);
+    public Map<String, Integer> deserialize(String data);
 
     /**
      *

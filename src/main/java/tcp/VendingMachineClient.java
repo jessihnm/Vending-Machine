@@ -1,7 +1,7 @@
 package tcp;
 
 
-import parser.EnglishItemsParser;
+import parser.EnglishDeserializer;
 
 import java.io.*;
 import java.net.Socket;
@@ -30,8 +30,8 @@ public class VendingMachineClient {
 
     }
 
-    private Map<String, Integer> askForProducts() throws IOException {
-       EnglishItemsParser parser = new EnglishItemsParser();
+    public Map<String, Integer> askForProducts() throws IOException {
+       EnglishDeserializer parser = new EnglishDeserializer();
 
         OutputStream os = socket.getOutputStream();
         InputStream is = socket.getInputStream();
@@ -44,7 +44,7 @@ public class VendingMachineClient {
 
         String response = input.readUTF();
         System.out.println(".server sent response");
-        return parser.parse(response);
+        return parser.deserialize(response);
     }
 
     VendingMachineClient(String hostname, int port) throws IOException {//repräsentiert Verbinung zum Server

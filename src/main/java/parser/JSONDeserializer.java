@@ -1,10 +1,10 @@
 package parser;
 import java.util.Map;
 
-public class JSONItemsParser implements ItemsParser {
+public class JSONDeserializer implements Deserializer {
 
     @Override
-    public Map<String, Integer> parse(String data) {
+    public Map<String, Integer> deserialize(String data) {
         return null;
     }
 

@@ -1,7 +1,5 @@
 package tcp;
 
-import parser.EnglishItemsParser;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,12 +12,12 @@ public class VendingMachineServer {
         VendingMachineServer vendingMachineServer = new VendingMachineServer(PORTNUMBER);
         vendingMachineServer.handleRequest();
     }
-    private Socket acceptSocket() throws IOException {
+    public Socket acceptSocket() throws IOException {
         ServerSocket srvSocket = new ServerSocket(this.port); //Serverport anlegen
         System.out.println("ready to accept connections");
         return srvSocket.accept();
     }
-    private void handleRequest() throws IOException {
+    public void handleRequest() throws IOException {
 
         Socket socket = this.acceptSocket();
 

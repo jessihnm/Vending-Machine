@@ -7,15 +7,15 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 
-public class TestEnglishItemsParser {
+public class TestEnglishDeserializer {
     @Test
     public void testInitialState() {
         //Given an instance of EnglishParser
-        EnglishItemsParser parser = new EnglishItemsParser();
+        EnglishDeserializer parser = new EnglishDeserializer();
         //When I check the current state
         EnglishParsingState state = parser.getCurrentState();
-        //Then the initial state should be ITEM_QTY
-        assertEquals(state, EnglishParsingState.ITEM_QTY);
+        //Then the initial state should be ITEM_ID
+        assertEquals(state, EnglishParsingState.ITEM_ID);
     }
 
     @Test
@@ -23,9 +23,9 @@ public class TestEnglishItemsParser {
         //Given the String "1 Pepsi."
         String data = "1 Pepsi.";
         //And and instance of EnglishItemsParser
-        EnglishItemsParser parser = new EnglishItemsParser();
+        EnglishDeserializer parser = new EnglishDeserializer();
         //When I call parse
-        parser.parse(data);
+        parser.deserialize(data);
         //Then it should be in the state END
         assertEquals(EnglishParsingState.END, parser.getCurrentState());
     }
@@ -35,9 +35,9 @@ public class TestEnglishItemsParser {
         //Given the String "3 Pepsi."
         String data = "3 Pepsi.";
         //And and instance of EnglishItemsParser
-        EnglishItemsParser parser = new EnglishItemsParser();
+        EnglishDeserializer parser = new EnglishDeserializer();
         //When I call parse
-        Map<String, Integer> items = parser.parse(data);
+        Map<String, Integer> items = parser.deserialize(data);
         //Then it should have one item
         assertEquals(1, items.size());
         //And it should have an Pepsi
@@ -54,9 +54,9 @@ public class TestEnglishItemsParser {
         //Given the String "2 Sprite."
         String data = "2 Sprite.";
         //And and instance of EnglishItemsParser
-        EnglishItemsParser parser = new EnglishItemsParser();
+        EnglishDeserializer parser = new EnglishDeserializer();
         //When I call parse
-        Map<String, Integer> items = parser.parse(data);
+        Map<String, Integer> items = parser.deserialize(data);
         //Then it should have one item
         assertEquals(1, items.size());
         //And it should have a Sprite
@@ -73,12 +73,12 @@ public class TestEnglishItemsParser {
         //Given a string with 2 items (comma separated) "2 Pepsi, 4 Sprite."
         String data = "2 Pepsi, 4 Sprite.";
         //And and instance of EnglishItemsParser
-        EnglishItemsParser parser = new EnglishItemsParser();
+        EnglishDeserializer parser = new EnglishDeserializer();
         //When I call parse
-        Map<String, Integer> items = parser.parse(data);
+        Map<String, Integer> items = parser.deserialize(data);
         //Then it should have two items
         assertEquals(2, items.size());
-        //And it should have 2 Pepsis and 4 Sprites
+        //And the pepsi id should be 2 and sprite id should be 4
         assertEquals(items, new HashMap<String, Integer>()
         {{
             // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
@@ -93,12 +93,12 @@ public class TestEnglishItemsParser {
         //Given a string with 3 items "2 Pepsi, 4 Sprite, 3 Fanta."
         String data = "2 Pepsi, 4 Sprite, 3 Fanta.";
         //And and instance of EnglishItemsParser
-        EnglishItemsParser parser = new EnglishItemsParser();
+        EnglishDeserializer parser = new EnglishDeserializer();
         //When I call parse
-        Map<String, Integer> items = parser.parse(data);
+        Map<String, Integer> items = parser.deserialize(data);
         //Then it should have three items
         assertEquals(3, items.size());
-        //And it should have 2 Pepsis, 4 Sprites and 3 Fantas
+        //And their ids should match the ones from the hashtable below
         assertEquals(items, new HashMap<String, Integer>()
         {{
             // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
@@ -115,12 +115,12 @@ public class TestEnglishItemsParser {
         //Given a string with 3 items "2 Pepsi, 4 Sprite, 3 Fanta."
         String data = "2 Pepsi, 4 Sprite, 3 Coke Zero.";
         //And and instance of EnglishItemsParser
-        EnglishItemsParser parser = new EnglishItemsParser();
+        EnglishDeserializer parser = new EnglishDeserializer();
         //When I call parse
-        Map<String, Integer> items = parser.parse(data);
+        Map<String, Integer> items = parser.deserialize(data);
         //Then it should have three items
         assertEquals(3, items.size());
-        //And it should have 2 Pepsis, 4 Sprites and 3 Fantas
+        //And their ids should match the ones from the hashtable below
         assertEquals(items, new HashMap<String, Integer>()
         {{
             // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
@@ -132,5 +132,13 @@ public class TestEnglishItemsParser {
         assertEquals(EnglishParsingState.END, parser.getCurrentState());
     }
     // TODO: test the exceptions
+    @Test
+    public void exception1() {
+        String data = ".,";
+        //And and instance of EnglishItemsParser
+        EnglishDeserializer parser = new EnglishDeserializer();
+        //When I call parse
+        parser.deserialize(data);
+    }
 
 }
