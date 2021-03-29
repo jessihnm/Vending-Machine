@@ -1,4 +1,4 @@
-package parser;
+package serialization;
 
 public enum EnglishParsingState implements ParserState {
     ITEM_ID,

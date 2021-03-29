@@ -1,4 +1,4 @@
-package parser;
+package serialization;
 
 
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ public class TestEnglishDeserializer {
         //Given an instance of EnglishParser
         EnglishDeserializer parser = new EnglishDeserializer();
         //When I check the current state
-        EnglishParsingState state = parser.getCurrentState();
+        ParserState state = parser.getCurrentState();
         //Then the initial state should be ITEM_ID
         assertEquals(state, EnglishParsingState.ITEM_ID);
     }

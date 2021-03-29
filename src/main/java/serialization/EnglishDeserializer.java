@@ -1,4 +1,4 @@
-package parser;
+package serialization;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,7 +97,7 @@ public class EnglishDeserializer implements Deserializer {
         }
     }
 
-    public EnglishParsingState getCurrentState() {
+    public ParserState getCurrentState() {
         return this.state;
     }
 }

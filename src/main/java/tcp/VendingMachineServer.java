@@ -1,6 +1,6 @@
 package tcp;
 
-import parser.EnglishSerializer;
+import serialization.EnglishSerializer;
 
 import java.io.*;
 import java.net.ServerSocket;

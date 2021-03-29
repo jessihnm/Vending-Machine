@@ -3,7 +3,7 @@ package tcp;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import parser.EnglishDeserializationError;
+import serialization.EnglishDeserializationError;
 
 import java.io.IOException;
 import java.util.HashMap;

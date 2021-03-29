@@ -1,8 +1,8 @@
 package tcp;
 
 
-import parser.EnglishDeserializationError;
-import parser.EnglishDeserializer;
+import serialization.EnglishDeserializationError;
+import serialization.EnglishDeserializer;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -1,4 +1,4 @@
-package parser;
+package serialization;
 
 import java.util.Map;
 
