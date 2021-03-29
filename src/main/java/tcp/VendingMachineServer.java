@@ -69,7 +69,7 @@ public class VendingMachineServer implements TCPServer {
             output.writeUTF(serializer.serialize(availableProducts));
         } else if (request.equals("stop server;")) {
             output.writeBoolean(true);
-            return false;
+            this.shouldRun = false;
         }
         return this.shouldRun;
     }
@@ -87,7 +87,7 @@ public class VendingMachineServer implements TCPServer {
         DataInputStream input = new DataInputStream(is);
         DataOutputStream output = new DataOutputStream(os);
 
-        while (!processConnection(input, output)) {
+        while (processConnection(input, output)) {
             try {
                 Thread.sleep(0);
             } catch (InterruptedException e) {
