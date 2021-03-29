@@ -2,7 +2,6 @@ package tcp;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import parser.EnglishDeserializationError;
 
@@ -49,7 +48,6 @@ public class VendingMachineClientTest {
         server.stop();
     }
 
-    @Ignore
     @Test
     public void testServerAcceptsRequestToStop() throws IOException, EnglishDeserializationError {
         // Given that I have a TCP client connected to the server
@@ -70,5 +68,11 @@ public class VendingMachineClientTest {
         Boolean stopped = client.stopServer();
         // Then the server should have stopped
         assertTrue(stopped);
+
+        // TODO: use hamcrest
+//        // When I ask the server for products it should throw an exception
+//        Map<String, Integer> products2 = client.askForProducts();
+//
+//        assertEquals(products1, new HashMap<String, Integer>());
     }
 }
