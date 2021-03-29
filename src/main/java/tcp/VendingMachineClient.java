@@ -4,7 +4,9 @@ package tcp;
 import parser.EnglishDeserializationError;
 import parser.EnglishDeserializer;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.Map;
 import java.util.Set;
@@ -16,14 +18,19 @@ public class VendingMachineClient {
     private final int port;
     private Socket socket = null;
 
+    private DataOutputStream output = null;
+    private DataInputStream input = null;
 
-    VendingMachineClient(String hostname, int port) throws IOException {//repräsentiert Verbinung zum Server
+    VendingMachineClient(String hostname, int port) throws IOException {
         this.hostname = hostname;
         this.port = port;
         this.socket = new Socket(this.hostname, this.port);
+
+        output = new DataOutputStream(socket.getOutputStream());
+        input = new DataInputStream(socket.getInputStream());
     }
 
-    public static void main(String[] args) throws IOException, EnglishDeserializationError {
+    public static void main(String[] args) throws IOException, EnglishDeserializationError, InterruptedException {
 
         VendingMachineClient client = new VendingMachineClient(DEFAULT_HOST, DEFAULT_PORT);
         Map<String, Integer> products = client.askForProducts();
@@ -34,23 +41,36 @@ public class VendingMachineClient {
         for (Map.Entry<String, Integer> e : entries) {
             System.out.println("\033[1;32m" + e.getKey() + " \033[0m");
         }
+        Thread.sleep(2000);
+        Boolean serverStopped = client.stopServer();
+        if (serverStopped) {
+            System.out.println("server politely stopped itself.");
 
+        }
+    }
+
+    public Boolean stopServer() throws IOException {
+        System.out.println("client is requesting server to stop");
+        output.writeUTF("stop server;");
+        try {
+            Boolean response = input.readBoolean();
+            System.out.println("server sent response " + response.toString());
+            return response;
+        } catch (IOException e) {
+            System.err.println("server did not send response");
+
+            return false;
+        }
     }
 
     public Map<String, Integer> askForProducts() throws IOException, EnglishDeserializationError {
         EnglishDeserializer parser = new EnglishDeserializer();
-
-        OutputStream os = socket.getOutputStream();
-        InputStream is = socket.getInputStream();
-
-        DataOutputStream output = new DataOutputStream(os);
-        DataInputStream input = new DataInputStream(is);
         System.out.println("client is requesting to see products");
 
         output.writeUTF("show products;");
 
         String response = input.readUTF();
-        System.out.println(".server sent response");
+        System.out.println("server sent response");
         return parser.deserialize(response);
     }
 
