@@ -9,8 +9,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class VendingMachineClientTest {
@@ -38,12 +39,12 @@ public class VendingMachineClientTest {
         Map<String, Integer> products = client.askForProducts();
 
         // Then it should return the expected list of products
-        assertEquals(products, new HashMap<String, Integer>() {{
+        assertThat(new HashMap<String, Integer>() {{
             // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
             put("Coke Zero", 3);
             put("Fanta", 4);
             put("Sprite", 6);
-        }});
+        }}, is(products));
 
         server.stop();
     }
@@ -57,18 +58,19 @@ public class VendingMachineClientTest {
         Map<String, Integer> products1 = client.askForProducts();
 
         // Then it should return the expected list of products
-        assertEquals(products1, new HashMap<String, Integer>() {{
+        assertThat(new HashMap<String, Integer>() {{
             // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
             put("Coke Zero", 3);
             put("Fanta", 4);
             put("Sprite", 6);
-        }});
+        }}, is(products1));
 
         // When I ask the server to stop
         Boolean stopped = client.stopServer();
         // Then the server should have stopped
-        assertTrue(stopped);
+        assertThat(stopped, is(true));
 
-        //assertThrows("Client is not connected to " + client.getServerAddress(), VendingMachineClientDisconnected.class, new Runnable(){  client.askForProducts()});
+        VendingMachineClientDisconnected error = assertThrows(VendingMachineClientDisconnected.class, () -> client.askForProducts());
+        assertThat(error.getMessage(), is("Client is not connected to " + client.getServerAddress()));
     }
 }

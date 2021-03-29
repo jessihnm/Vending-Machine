@@ -4,10 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 class JSONSerializerTest {
     private final JSONSerializer serializer = new JSONSerializer();
+
     @Test
     void serialize() throws SerializationError {
         // Given a HashMap
@@ -22,10 +24,10 @@ class JSONSerializerTest {
         String result = serializer.serialize(input);
 
         // Then it should look like a JSON
-        assertEquals("{\n" +
+        assertThat("{\n" +
                 "  \"Sprite\" : 4,\n" +
                 "  \"Pepsi\" : 2,\n" +
                 "  \"Coke Zero\" : 3\n" +
-                "}", result);
+                "}", is(result));
     }
 }

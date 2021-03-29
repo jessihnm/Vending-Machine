@@ -5,11 +5,13 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 class JSONDeserializerTest {
 
     private final JSONDeserializer deserializer = new JSONDeserializer();
+
     @Test
     void deserialize() throws DeserializationError {
         // Given a valid JSON string
@@ -19,8 +21,9 @@ class JSONDeserializerTest {
         Map<String, Integer> result = deserializer.deserialize(input);
 
         // Then it should match my hashmap
-        assertEquals(new HashMap<String, Integer>() {{
+        assertThat(new HashMap<String, Integer>() {{
             put("foo", 1);
-        }}, result);
+        }}, is(result));
+
     }
 }

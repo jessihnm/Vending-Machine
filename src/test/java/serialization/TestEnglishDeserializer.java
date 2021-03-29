@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestEnglishDeserializer {
@@ -17,7 +18,7 @@ public class TestEnglishDeserializer {
         //When I check the current state
         ParserState state = parser.getCurrentState();
         //Then the initial state should be ITEM_ID
-        assertEquals(state, EnglishParsingState.ITEM_ID);
+        assertThat(state, is(EnglishParsingState.ITEM_ID));
     }
 
     @Test
@@ -29,7 +30,7 @@ public class TestEnglishDeserializer {
         //When I call parse
         parser.deserialize(data);
         //Then it should be in the state END
-        assertEquals(EnglishParsingState.END, parser.getCurrentState());
+        assertThat(EnglishParsingState.END, is(parser.getCurrentState()));
     }
 
     @Test
@@ -41,14 +42,14 @@ public class TestEnglishDeserializer {
         //When I call parse
         Map<String, Integer> items = parser.deserialize(data);
         //Then it should have one item
-        assertEquals(1, items.size());
+        assertThat(1, is(items.size()));
         //And it should have an Pepsi
-        assertEquals(items, new HashMap<String, Integer>() {{
+        assertThat(new HashMap<String, Integer>() {{
             // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
             put("Pepsi", 3);
-        }});
+        }}, is(items));
         //Then it should be in the state END
-        assertEquals(EnglishParsingState.END, parser.getCurrentState());
+        assertThat(EnglishParsingState.END, is(parser.getCurrentState()));
     }
 
     @Test
@@ -60,14 +61,14 @@ public class TestEnglishDeserializer {
         //When I call parse
         Map<String, Integer> items = parser.deserialize(data);
         //Then it should have one item
-        assertEquals(1, items.size());
+        assertThat(items.size(), is(1));
         //And it should have a Sprite
-        assertEquals(items, new HashMap<String, Integer>() {{
+        assertThat(new HashMap<String, Integer>() {{
             // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
             put("Sprite", 2);
-        }});
+        }}, is(items));
         //Then it should be in the state END
-        assertEquals(EnglishParsingState.END, parser.getCurrentState());
+        assertThat(parser.getCurrentState(), is(EnglishParsingState.END));
     }
 
     @Test
@@ -79,15 +80,15 @@ public class TestEnglishDeserializer {
         //When I call parse
         Map<String, Integer> items = parser.deserialize(data);
         //Then it should have two items
-        assertEquals(2, items.size());
+        assertThat(items.size(), is(2));
         //And the pepsi id should be 2 and sprite id should be 4
-        assertEquals(items, new HashMap<String, Integer>() {{
+        assertThat(new HashMap<String, Integer>() {{
             // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
             put("Pepsi", 2);
             put("Sprite", 4);
-        }});
+        }}, is(items));
         //Then it should be in the state END
-        assertEquals(EnglishParsingState.END, parser.getCurrentState());
+        assertThat(parser.getCurrentState(), is(EnglishParsingState.END));
     }
 
     @Test
@@ -99,16 +100,16 @@ public class TestEnglishDeserializer {
         //When I call parse
         Map<String, Integer> items = parser.deserialize(data);
         //Then it should have three items
-        assertEquals(3, items.size());
+        assertThat(items.size(), is(3));
         //And their ids should match the ones from the hashtable below
-        assertEquals(items, new HashMap<String, Integer>() {{
+        assertThat(new HashMap<String, Integer>() {{
             // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
             put("Pepsi", 2);
             put("Sprite", 4);
             put("Fanta", 3);
-        }});
+        }}, is(items));
         //Then it should be in the state END
-        assertEquals(EnglishParsingState.END, parser.getCurrentState());
+        assertThat(parser.getCurrentState(), is(EnglishParsingState.END));
     }
 
     @Test
@@ -120,16 +121,16 @@ public class TestEnglishDeserializer {
         //When I call parse
         Map<String, Integer> items = parser.deserialize(data);
         //Then it should have three items
-        assertEquals(3, items.size());
+        assertThat(items.size(), is(3));
         //And their ids should match the ones from the hashtable below
-        assertEquals(items, new HashMap<String, Integer>() {{
+        assertThat(new HashMap<String, Integer>() {{
             // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
             put("Pepsi", 2);
             put("Sprite", 4);
             put("Coke Zero", 3);
-        }});
+        }}, is(items));
         //Then it should be in the state END
-        assertEquals(EnglishParsingState.END, parser.getCurrentState());
+        assertThat(parser.getCurrentState(), is(EnglishParsingState.END));
     }
 
     @Test
@@ -138,7 +139,7 @@ public class TestEnglishDeserializer {
         //And and instance of EnglishItemsParser
         EnglishDeserializer parser = new EnglishDeserializer();
         //When I call parse the it should throw an exception
-        assertThrows(EnglishDeserializationError.class, ()-> parser.deserialize(data));
+        assertThrows(EnglishDeserializationError.class, () -> parser.deserialize(data));
     }
 
 }

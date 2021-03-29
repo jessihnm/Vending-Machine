@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 
 public class TestEnglishSerializationIntegration {
     @Test
@@ -26,10 +28,10 @@ public class TestEnglishSerializationIntegration {
         //When I serialize the HashMap
         String items = serializer.serialize(products);
         //Then it should return a String "4 Sprite, 6 Coke, 2 Coke Zero."
-        assertEquals("4 Sprite, 6 Coke, 2 Coke Zero.", items);
+        assertThat(items, is("4 Sprite, 6 Coke, 2 Coke Zero."));
         //And when I deserialize the String
         Map<String, Integer> result = deserializer.deserialize(items);
         //Then it should match the inital HashMap
-        assertEquals(products, result);
+        assertThat(result, is(products));
     }
 }
