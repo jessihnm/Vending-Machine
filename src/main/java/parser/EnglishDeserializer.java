@@ -7,24 +7,25 @@ import java.util.Map;
 
 public class EnglishDeserializer implements Deserializer {
 
-    private EnglishParsingState state = EnglishParsingState.ITEM_ID;
     Map<String, Integer> items = new HashMap<>();
     List<String> buffer = new ArrayList<String>();
     Integer currentID = null;
+    private EnglishParsingState state = EnglishParsingState.ITEM_ID;
 
     @Override
-    public Map<String, Integer> deserialize(String data) {
-/*        this.state = EnglishParsingState.EXPECT_FULL_STOP;
-        this.items.put("iPhone", 3);*/
-        for(int i = 0; i<data.length(); i++) {
-            this.parseNext(data.substring(i, i+1));
+    public Map<String, Integer> deserialize(String input) throws EnglishDeserializationError {
+        // For each character of the input string
+        for (int i = 0; i < input.length(); i++) {
+            // Run character by character in my state machine
+            String character = input.substring(i, i + 1);
+            this.parseNext(character);
         }
         return items;
     }
 
     @Override
-    public void parseNext(String character) {
-
+    public void parseNext(String character) throws EnglishDeserializationError {
+        // main method of my state machine
         switch (this.state) {
             case ITEM_ID:
                 parseItemID(character);
@@ -43,8 +44,8 @@ public class EnglishDeserializer implements Deserializer {
     private void parseMoreItems(String character) {
         switch (character) {
             case ",":
-                 this.state = EnglishParsingState.MORE_ITEMS;
-                 break;
+                this.state = EnglishParsingState.MORE_ITEMS;
+                break;
             case " ":
                 this.state = EnglishParsingState.ITEM_ID;
                 break;
@@ -55,15 +56,12 @@ public class EnglishDeserializer implements Deserializer {
     }
 
     private void parseItemName(String character) {
-        if (this.state != EnglishParsingState.ITEM_NAME) {
-            throw new RuntimeException("Cannot parse item name because current state is not EXPECT_ITEM_NAME");
-        }
         if (character.equals(".")) {
             this.state = EnglishParsingState.END;
             addItemFromBuffer();
             return;
         }
-        if (character.matches("[A-Za-z ]")){
+        if (character.matches("[A-Za-z ]")) {
             this.buffer.add(character);
         } else {
             addItemFromBuffer();
@@ -86,16 +84,16 @@ public class EnglishDeserializer implements Deserializer {
         }
         return temp;
     }
-    private void parseItemID(String character) {
-        if (this.state != EnglishParsingState.ITEM_ID) {
-            throw new RuntimeException("Cannot parse item quantity because current state is not EXPECT_ITEM_ID");
-        }
-        if (character.matches("\\d")){
+
+    private void parseItemID(String character) throws EnglishDeserializationError {
+        if (character.matches("\\d")) {
             this.buffer.add(character);
         } else if (character.matches("\\s")) {
             this.currentID = Integer.parseInt(getBufferAsString());
             this.buffer.clear();
             this.state = EnglishParsingState.ITEM_NAME;
+        } else {
+            throw new EnglishDeserializationError("Invalid character '" + character + "' while parsing item id");
         }
     }
 

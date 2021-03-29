@@ -19,7 +19,7 @@ public class TestEnglishDeserializer {
     }
 
     @Test
-    public void parseSingleItemChangesState() {
+    public void parseSingleItemChangesState() throws EnglishDeserializationError {
         //Given the String "1 Pepsi."
         String data = "1 Pepsi.";
         //And and instance of EnglishItemsParser
@@ -31,7 +31,7 @@ public class TestEnglishDeserializer {
     }
 
     @Test
-    public void parseSingleItemReturnsHashMapWithItem() {
+    public void parseSingleItemReturnsHashMapWithItem() throws EnglishDeserializationError {
         //Given the String "3 Pepsi."
         String data = "3 Pepsi.";
         //And and instance of EnglishItemsParser
@@ -50,7 +50,7 @@ public class TestEnglishDeserializer {
         assertEquals(EnglishParsingState.END, parser.getCurrentState());
     }
     @Test
-    public void parseSingleItemVariation2() {
+    public void parseSingleItemVariation2() throws EnglishDeserializationError {
         //Given the String "2 Sprite."
         String data = "2 Sprite.";
         //And and instance of EnglishItemsParser
@@ -69,7 +69,7 @@ public class TestEnglishDeserializer {
         assertEquals(EnglishParsingState.END, parser.getCurrentState());
     }
     @Test
-    public void parseTwoItemsReturnHashmapWithThem() {
+    public void parseTwoItemsReturnHashmapWithThem() throws EnglishDeserializationError {
         //Given a string with 2 items (comma separated) "2 Pepsi, 4 Sprite."
         String data = "2 Pepsi, 4 Sprite.";
         //And and instance of EnglishItemsParser
@@ -89,7 +89,7 @@ public class TestEnglishDeserializer {
         assertEquals(EnglishParsingState.END, parser.getCurrentState());
     }
     @Test
-    public void parseThreeItemsReturnHashmapWithThem() {
+    public void parseThreeItemsReturnHashmapWithThem() throws EnglishDeserializationError {
         //Given a string with 3 items "2 Pepsi, 4 Sprite, 3 Fanta."
         String data = "2 Pepsi, 4 Sprite, 3 Fanta.";
         //And and instance of EnglishItemsParser
@@ -111,7 +111,7 @@ public class TestEnglishDeserializer {
     }
 
     @Test
-    public void parseItemWithSpaceInTheNameShouldWork() {
+    public void parseItemWithSpaceInTheNameShouldWork() throws EnglishDeserializationError {
         //Given a string with 3 items "2 Pepsi, 4 Sprite, 3 Fanta."
         String data = "2 Pepsi, 4 Sprite, 3 Coke Zero.";
         //And and instance of EnglishItemsParser
@@ -131,14 +131,14 @@ public class TestEnglishDeserializer {
         //Then it should be in the state END
         assertEquals(EnglishParsingState.END, parser.getCurrentState());
     }
-    // TODO: test the exceptions
-    @Test
-    public void exception1() {
+    @Test(expected = EnglishDeserializationError.class)
+    public void testInvalidDeserialization() throws EnglishDeserializationError {
         String data = ".,";
         //And and instance of EnglishItemsParser
         EnglishDeserializer parser = new EnglishDeserializer();
         //When I call parse
         parser.deserialize(data);
+        // Then it should throw an exception
     }
 
 }

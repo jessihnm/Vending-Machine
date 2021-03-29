@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class TestEnglishSerializationIntegration {
     @Test
-    public void serializationWorks(){
+    public void serializationWorks() throws EnglishDeserializationError {
         //Given I have a HashMap with one sprite whose id is 4 and a coke whose id is 6 and Coke Zero whose id is 2
         Map<String, Integer> products = new HashMap<String, Integer>() {{
             put("Sprite", 4);

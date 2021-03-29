@@ -2,7 +2,7 @@ package parser;
 
 import java.util.Map;
 
-public class EnglishSerializer implements Serializer{
+public class EnglishSerializer implements Serializer {
     @Override
     public String serialize(Map<String, Integer> data) {
         String products = "";
@@ -11,10 +11,10 @@ public class EnglishSerializer implements Serializer{
         for (Map.Entry<String, Integer> entry : data.entrySet()) {
             counter++;
             String end = ", ";
-            if(counter == data.size()) {
+            if (counter == data.size()) {
                 end = ".";
             }
-            products += entry.getValue() + " " +entry.getKey() + end;
+            products += entry.getValue() + " " + entry.getKey() + end;
         }
 
         return products;

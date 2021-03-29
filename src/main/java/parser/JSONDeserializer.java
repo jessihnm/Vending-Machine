@@ -1,4 +1,5 @@
 package parser;
+
 import java.util.Map;
 
 public class JSONDeserializer implements Deserializer {
