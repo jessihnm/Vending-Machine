@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class VendingMachineClientTest {
+    public static final String HOSTNAME = "127.0.0.1";
     VendingMachineServerManager server = null;
     VendingMachineClient client = null;
 
@@ -33,7 +34,7 @@ public class VendingMachineClientTest {
     @Test
     public void testClientConnectsToServer() throws IOException, EnglishDeserializationError, VendingMachineClientDisconnected {
         // Given that I have a TCP client connected to the server
-        VendingMachineClient client = new VendingMachineClient("localhost", server.getPort());
+        VendingMachineClient client = new VendingMachineClient(HOSTNAME, server.getPort());
 
         // When I call askForProducts
         Map<String, Integer> products = client.askForProducts();
@@ -45,14 +46,12 @@ public class VendingMachineClientTest {
             put("Fanta", 4);
             put("Sprite", 6);
         }}, is(products));
-
-        server.stop();
     }
 
     @Test
     public void testServerAcceptsRequestToStop() throws IOException, EnglishDeserializationError, VendingMachineClientDisconnected {
         // Given that I have a TCP client connected to the server
-        VendingMachineClient client = new VendingMachineClient("localhost", server.getPort());
+        VendingMachineClient client = new VendingMachineClient(HOSTNAME, server.getPort());
 
         // When I call askForProducts
         Map<String, Integer> products1 = client.askForProducts();
