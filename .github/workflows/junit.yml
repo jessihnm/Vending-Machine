@@ -13,10 +13,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Build with Gradle
-        run: ./gradlew build
-
-      - name: Run Tests
-        run: ./gradlew test
+        run: ./gradlew build --stacktrace
 
 
   tests:
@@ -30,4 +27,4 @@ jobs:
           java-version: 1.8
 
       - name: Run Tests
-        run: ./gradlew test
+        run: ./gradlew test --stacktrace
