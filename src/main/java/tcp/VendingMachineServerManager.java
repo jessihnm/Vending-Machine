@@ -2,11 +2,17 @@ package tcp;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Encapsulates the logic of running a VendingMachineServer within a thread. Takes care of creating the thread and passing messages to it.
+ */
 public class VendingMachineServerManager {
+    private final int pollingTimeoutInMiliseconds;
     BlockingQueue<String> serverErrors = new LinkedBlockingQueue<>();
     BlockingQueue<TCPServerCommand> commands = new LinkedBlockingQueue<>();
     private Integer port = null;
@@ -25,8 +31,7 @@ public class VendingMachineServerManager {
                 try {
                     serverErrors.put(e.toString());
                 } catch (InterruptedException interruptedException) {
-                    System.err.println("The thread managed by " + this.getClass().getCanonicalName() + " died while handling exceptions.");
-                    interruptedException.printStackTrace();
+                    System.err.println("The thread managed by " + this.getClass().getCanonicalName() + " died while trying to handle an exception and add it to the queue 🥵.");
                     return;
                 }
             }
@@ -38,8 +43,8 @@ public class VendingMachineServerManager {
                         lastCommand = cmd;
                     }
                 } catch (InterruptedException e) {
-                    System.err.println("The thread managed by " + this.getClass().getCanonicalName() + " died while handling exceptions.");
-                    e.printStackTrace();
+                    // System.err.println("The thread managed by " + this.getClass().getCanonicalName() + " died while handling exceptions 💔.");
+                    // e.printStackTrace();
                     return;
                 }
 
@@ -58,13 +63,13 @@ public class VendingMachineServerManager {
                     try {
                         serverErrors.put(e.toString());
                     } catch (InterruptedException ie) {
-                        System.err.println("The thread managed by " + this.getClass().getCanonicalName() + " was interrupted while handling the upstream exception: " + e.toString());
-                        ie.printStackTrace();
+                        System.err.println("The thread managed by " + this.getClass().getCanonicalName() + " was interrupted while handling the upstream exception 🔥: " + e.toString());
                         return;
                     }
                 }
             }
         };
+        pollingTimeoutInMiliseconds = 500;
     }
 
     public VendingMachineServerManager() throws IOException {
@@ -81,9 +86,8 @@ public class VendingMachineServerManager {
 
     public void start() {
         if (this.thread != null) {
-            throw new RuntimeException("VendingMachineServer is already running (on port: " + this.port.toString() + ")");
+            throw new RuntimeException("VendingMachineServer is already running 🚫 (on port: " + this.port.toString() + ")");
         }
-
 
         this.thread = new Thread(task);
         thread.start();
@@ -96,5 +100,30 @@ public class VendingMachineServerManager {
 
     public void stop() {
         commands.add(TCPServerCommand.STOP);
+        List<String> errors = new ArrayList<String>();
+        Integer totalThreadErrors = serverErrors.drainTo(errors);
+        if (totalThreadErrors > 0) {
+            System.err.println("Server got " + totalThreadErrors.toString() + " errors 🔥:");
+            for (String error : errors) {
+                System.err.println("\t" + error);
+            }
+        } else {
+            System.err.println("Server stopped without errors! 😇");
+
+        }
+    }
+
+    /**
+     * Reads error messages that happened inside the managed thread.
+     *
+     * @return String when there is an error or null when the thread has not failed.
+     */
+    public String getErrorFromThread() {
+        try {
+            return serverErrors.poll(pollingTimeoutInMiliseconds, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            System.err.println("Thre");
+            return null;
+        }
     }
 }

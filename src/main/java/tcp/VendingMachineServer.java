@@ -16,7 +16,7 @@ public class VendingMachineServer implements TCPServer {
         put("Sprite", 6);
     }};
     private final EnglishSerializer serializer = new EnglishSerializer();
-    private Integer port;
+    private final Integer port;
     private boolean shouldRun = true;
     private ServerSocket socket = null;
 
@@ -45,7 +45,7 @@ public class VendingMachineServer implements TCPServer {
         if (socket == null) {
             socket = new ServerSocket(port);
             socket.setReuseAddress(true);
-            System.out.println(this.getClass().getName() + " is running and ready to accept connections on port " + this.port.toString());
+            System.out.println(this.getClass().getName() + " is running and ready to accept connections on port " + this.port.toString() + " ✅");
             return true;
         }
         return false;
@@ -63,7 +63,7 @@ public class VendingMachineServer implements TCPServer {
      */
     public Boolean processConnection(DataInputStream input, DataOutputStream output) throws IOException {
         String request = input.readUTF();
-        System.out.println("client sent request: " + request);
+        System.out.println("client sent request: ⬆️" + request);
 
         if (request.equals("show products;")) {
             output.writeUTF(serializer.serialize(availableProducts));
@@ -71,12 +71,13 @@ public class VendingMachineServer implements TCPServer {
             output.writeBoolean(true);
             this.shouldRun = false;
         }
+        System.out.println("Server sent response: ⬇️");
         return this.shouldRun;
     }
 
     public void handleNewConnection() throws IOException {
         if (socket == null) {
-            throw new RuntimeException("handleNewConnection() cannot be called before listen()");
+            throw new TCPServerError("handleNewConnection() cannot be called before listen()");
         }
         Socket connection = socket.accept();
 
@@ -88,13 +89,7 @@ public class VendingMachineServer implements TCPServer {
         DataOutputStream output = new DataOutputStream(os);
 
         while (processConnection(input, output)) {
-            try {
-                Thread.sleep(0);
-            } catch (InterruptedException e) {
-                this.shouldRun = false;
-                System.err.println(this.getClass().getCanonicalName() + " has been interrupted while sleeping: " + e.toString());
-                break;
-            }
+            Thread.yield();
         }
         output.close();
         input.close();

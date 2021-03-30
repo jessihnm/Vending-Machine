@@ -9,6 +9,9 @@ import java.util.Map;
 
 public class JSONDeserializer implements Deserializer {
     private final ObjectMapper mapper;
+    TypeReference<HashMap<String, Integer>> hashmapOfIntegerByString
+            = new TypeReference<HashMap<String, Integer>>() {
+    };
 
     public JSONDeserializer() {
         this.mapper = new ObjectMapper();
@@ -16,24 +19,11 @@ public class JSONDeserializer implements Deserializer {
 
     @Override
     public Map<String, Integer> deserialize(String data) throws DeserializationError {
-        TypeReference<HashMap<String, Integer>> typeRef
-                = new TypeReference<HashMap<String, Integer>>() {
-        };
         try {
-            return mapper.readValue(data, typeRef);
+            return mapper.readValue(data, hashmapOfIntegerByString);
         } catch (JsonProcessingException e) {
             throw new DeserializationError(e.toString());
         }
-    }
-
-    @Override
-    public void parseNext(String character) {
-
-    }
-
-    @Override
-    public ParserState getCurrentState() {
-        return JSONParserState.NOOP;
     }
 }
 

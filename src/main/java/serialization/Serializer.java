@@ -8,6 +8,6 @@ public interface Serializer {
     /**
      *
      */
-    public String serialize(Map<String, Integer> data) throws SerializationError, JsonProcessingException;
+    String serialize(Map<String, Integer> data) throws SerializationError, JsonProcessingException;
 }
 

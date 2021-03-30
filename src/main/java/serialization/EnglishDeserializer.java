@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EnglishDeserializer implements Deserializer {
+public class EnglishDeserializer implements Deserializer, StateMachine {
 
     Map<String, Integer> items = new HashMap<>();
     List<String> buffer = new ArrayList<String>();

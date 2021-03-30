@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class VendingMachineClientTest {
     public static final String HOSTNAME = "127.0.0.1";
     VendingMachineServerManager server = null;
-    VendingMachineClient client = null;
 
     @BeforeEach
     public void setUp() throws IOException {
@@ -28,6 +27,7 @@ public class VendingMachineClientTest {
 
     @AfterEach
     public void tearDown() {
+
         server.stop();
     }
 

@@ -24,10 +24,6 @@ class JSONSerializerTest {
         String result = serializer.serialize(input);
 
         // Then it should look like a JSON
-        assertThat("{\n" +
-                "  \"Sprite\" : 4,\n" +
-                "  \"Pepsi\" : 2,\n" +
-                "  \"Coke Zero\" : 3\n" +
-                "}", is(result));
+        assertThat(result, is("{\"Sprite\":4,\"Pepsi\":2,\"Coke Zero\":3}"));
     }
 }
