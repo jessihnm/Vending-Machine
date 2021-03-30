@@ -81,7 +81,7 @@ public class VendingMachineServer implements TCPServer {
         }
         Socket connection = socket.accept();
 
-        System.out.println("client connected");
+        System.out.println("client connected: " + connection.getInetAddress().getCanonicalHostName() + ":" + connection.getPort());
 
         InputStream is = connection.getInputStream();
         OutputStream os = connection.getOutputStream();

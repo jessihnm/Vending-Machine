@@ -24,7 +24,13 @@ public class VendingMachineClient {
     VendingMachineClient(String hostname, int port) throws IOException {
         this.hostname = hostname;
         this.port = port;
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            
+        }
         this.socket = new Socket(this.hostname, this.port);
+        System.out.println("Client is connected to: " + socket.getInetAddress().getCanonicalHostName() + ":" + socket.getPort());
 
         output = new DataOutputStream(socket.getOutputStream());
         input = new DataInputStream(socket.getInputStream());

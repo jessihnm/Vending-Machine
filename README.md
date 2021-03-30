@@ -14,7 +14,7 @@ A Java project to exercise primarily the following computer science topics:
 
 
 ```bash
-./gradlew test
+./gradlew test -i
 ```
 
 
