@@ -1,9 +1,10 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'org.example'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 repositories {
     mavenCentral()
@@ -19,4 +20,29 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+def jarPackage(className) {
+    return tasks.create("jar${className}", Jar) {
+        dependsOn compileJava
+        from {
+            configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        }    with jar
+
+        manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': "tcp.$className")
+        }
+        baseName = "$className"
+    }
+}
+
+
+artifacts {
+    archives jarPackage("VendingMachineClient"), jarPackage("VendingMachineServer")
+}
+tasks.create('jars') {
+    dependsOn tasks.jarVendingMachineServer, tasks.jarVendingMachineClient
 }
