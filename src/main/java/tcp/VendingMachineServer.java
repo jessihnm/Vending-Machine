@@ -1,5 +1,9 @@
 package tcp;
 
+import com.google.common.base.Charsets;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
 import serialization.EnglishSerializer;
 
 import java.io.*;
@@ -63,15 +67,21 @@ public class VendingMachineServer implements TCPServer {
      */
     public Boolean processConnection(DataInputStream input, DataOutputStream output) throws IOException {
         String request = input.readUTF();
-        System.out.println("client sent request: ⬆️" + request);
+        System.out.println("client sent request: ⬆️ " + request);
 
         if (request.equals("show products;")) {
             output.writeUTF(serializer.serialize(availableProducts));
         } else if (request.equals("stop server;")) {
             output.writeBoolean(true);
             this.shouldRun = false;
+        } else {
+            HashFunction hf = Hashing.sha256();
+            HashCode hc = hf.newHasher()
+                    .putString(serializer.serialize(availableProducts), Charsets.UTF_8)
+                    .hash();
+            output.writeUTF(hc.toString());
         }
-        System.out.println("Server sent response: ⬇️");
+        System.out.println("Server sent response: ⬇️ ");
         return this.shouldRun;
     }
 

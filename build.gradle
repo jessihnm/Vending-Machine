@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.2'
+    compile 'com.google.guava:guava:23.5-jre'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
 
     testImplementation 'org.hamcrest:hamcrest:2.2'
@@ -27,7 +28,7 @@ def jarPackage(className) {
         dependsOn compileJava
         from {
             configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-        }    with jar
+        }    with jar //https://www.baeldung.com/gradle-fat-jar
 
         manifest {
         attributes('Implementation-Title': project.name,

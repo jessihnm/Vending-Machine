@@ -52,6 +52,7 @@ public class VendingMachineClient {
         } catch (InterruptedException e) {
             System.err.println("...");
         }
+        String hash = client.requestHash();
         Boolean serverStopped = client.stopServer();
         if (serverStopped) {
             System.out.println("server politely stopped itself.");
@@ -59,6 +60,18 @@ public class VendingMachineClient {
         }
     }
 
+    public String requestHash() throws VendingMachineClientDisconnected {
+        System.out.println("client is requesting a hash");
+        try {
+            output.writeUTF("hash me;");
+            String response = input.readUTF();
+            System.out.println("server sent response " + response.toString());
+            return response;
+        } catch (IOException e) {
+            System.err.println("server did not send response");
+            throw new VendingMachineClientDisconnected(this);
+        }
+    }
     public Boolean stopServer() throws VendingMachineClientDisconnected {
         System.out.println("client is requesting server to stop");
         try {
