@@ -1,4 +1,4 @@
-package parser;
+package serialization;
 
 public interface ParserState {
 }

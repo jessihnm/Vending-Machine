@@ -1,0 +1,26 @@
+name: Continuous Integration
+
+on: [push]
+
+jobs:
+  Compile:
+    runs-on: ubuntu-latest
+    container:
+      image: gradle:6.8.3-jdk8
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run Tests
+        run: ./gradlew --stacktrace build
+
+  Test:
+    runs-on: ubuntu-latest
+    container:
+      image: gradle:6.8.3-jdk8
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run Tests
+        run: ./gradlew test -i

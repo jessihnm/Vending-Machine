@@ -1,17 +1,49 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'org.example'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.2'
+    compile 'com.google.guava:guava:23.5-jre'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
     testImplementation 'org.hamcrest:hamcrest:2.2'
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.4.2"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+def jarPackage(className) {
+    return tasks.create("jar${className}", Jar) {
+        dependsOn compileJava
+        from {
+            configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        }    with jar //https://www.baeldung.com/gradle-fat-jar
+
+        manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Main-Class': "tcp.$className")
+        }
+        baseName = "$className"
+    }
+}
+
+
+artifacts {
+    archives jarPackage("VendingMachineClient"), jarPackage("VendingMachineServer")
+}
+tasks.create('jars') {
+    dependsOn tasks.jarVendingMachineServer, tasks.jarVendingMachineClient
 }

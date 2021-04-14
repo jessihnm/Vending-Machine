@@ -1,10 +1,12 @@
 package tcp;
 
 
-import parser.EnglishDeserializationError;
-import parser.EnglishDeserializer;
+import serialization.EnglishDeserializationError;
+import serialization.EnglishDeserializer;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.Map;
 import java.util.Set;
@@ -16,14 +18,25 @@ public class VendingMachineClient {
     private final int port;
     private Socket socket = null;
 
+    private DataOutputStream output = null;
+    private DataInputStream input = null;
 
-    VendingMachineClient(String hostname, int port) throws IOException {//repräsentiert Verbinung zum Server
+    VendingMachineClient(String hostname, int port) throws IOException {
         this.hostname = hostname;
         this.port = port;
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            
+        }
         this.socket = new Socket(this.hostname, this.port);
+        System.out.println("Client is connected to: " + socket.getInetAddress().getCanonicalHostName() + ":" + socket.getPort());
+
+        output = new DataOutputStream(socket.getOutputStream());
+        input = new DataInputStream(socket.getInputStream());
     }
 
-    public static void main(String[] args) throws IOException, EnglishDeserializationError {
+    public static void main(String[] args) throws IOException, EnglishDeserializationError, VendingMachineClientDisconnected {
 
         VendingMachineClient client = new VendingMachineClient(DEFAULT_HOST, DEFAULT_PORT);
         Map<String, Integer> products = client.askForProducts();
@@ -34,25 +47,61 @@ public class VendingMachineClient {
         for (Map.Entry<String, Integer> e : entries) {
             System.out.println("\033[1;32m" + e.getKey() + " \033[0m");
         }
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            System.err.println("...");
+        }
+        String hash = client.requestHash();
+        Boolean serverStopped = client.stopServer();
+        if (serverStopped) {
+            System.out.println("server politely stopped itself.");
 
+        }
     }
 
-    public Map<String, Integer> askForProducts() throws IOException, EnglishDeserializationError {
+    public String requestHash() throws VendingMachineClientDisconnected {
+        System.out.println("client is requesting a hash");
+        try {
+            output.writeUTF("hash me;");
+            String response = input.readUTF();
+            System.out.println("server sent response " + response.toString());
+            return response;
+        } catch (IOException e) {
+            System.err.println("server did not send response");
+            throw new VendingMachineClientDisconnected(this);
+        }
+    }
+    public Boolean stopServer() throws VendingMachineClientDisconnected {
+        System.out.println("client is requesting server to stop");
+        try {
+            output.writeUTF("stop server;");
+            Boolean response = input.readBoolean();
+            System.out.println("server sent response " + response.toString());
+            return response;
+        } catch (IOException e) {
+            System.err.println("server did not send response");
+            throw new VendingMachineClientDisconnected(this);
+        }
+    }
+
+    public Map<String, Integer> askForProducts() throws EnglishDeserializationError, VendingMachineClientDisconnected {
         EnglishDeserializer parser = new EnglishDeserializer();
-
-        OutputStream os = socket.getOutputStream();
-        InputStream is = socket.getInputStream();
-
-        DataOutputStream output = new DataOutputStream(os);
-        DataInputStream input = new DataInputStream(is);
         System.out.println("client is requesting to see products");
+        String response;
 
-        output.writeUTF("show products;");
-
-        String response = input.readUTF();
-        System.out.println(".server sent response");
+        try {
+            output.writeUTF("show products;");
+            response = input.readUTF();
+        } catch (IOException e) {
+            throw new VendingMachineClientDisconnected(this);
+        }
+        System.out.println("server sent response");
         return parser.deserialize(response);
     }
 
 
+    public String getServerAddress() {
+        return this.hostname + ":" + this.port;
+    }
 }

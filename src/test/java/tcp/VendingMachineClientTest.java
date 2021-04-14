@@ -1,89 +1,75 @@
 package tcp;
 
-import org.junit.Test;
-import parser.EnglishDeserializationError;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import serialization.EnglishDeserializationError;
 
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 public class VendingMachineClientTest {
+    public static final String HOSTNAME = "127.0.0.1";
+    VendingMachineServerManager server = null;
 
-    private static int getFreeTCPPort() {
-        // https://www.baeldung.com/java-free-port#finding-a-free-port
-        try (ServerSocket serverSocket = new ServerSocket(0)) {
-            int localPort = serverSocket.getLocalPort();
-            serverSocket.close();
-            return localPort;
-        } catch (IOException e) {
-            throw new AssertionError("Failed to get free TCP port");
-        }
+    @BeforeEach
+    public void setUp() throws IOException {
+        // Given I have the TCP server running
+        server = new VendingMachineServerManager();
+        server.start();
     }
 
-    public void startServer(Integer port) {
-        // Background: I have a Thread that
-        Runnable task = () -> {
-            VendingMachineServer server = new VendingMachineServer(port);
+    @AfterEach
+    public void tearDown() {
 
-            try {
-                server.run();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        };
-
-        Thread thread = new Thread(task);
-        thread.start();
-
+        server.stop();
     }
 
     @Test
-    public void testClientConnectsToServer() throws IOException, EnglishDeserializationError {
-        // Given that I am using a free TCP port
-        Integer port = getFreeTCPPort();
-        // Given that I have the TCP server running in background that port
-        startServer(port);
-        // And that I have a TCP client connected to the server on that port
-        VendingMachineClient client = new VendingMachineClient("localhost", port);
+    public void testClientConnectsToServer() throws IOException, EnglishDeserializationError, VendingMachineClientDisconnected {
+        // Given that I have a TCP client connected to the server
+        VendingMachineClient client = new VendingMachineClient(HOSTNAME, server.getPort());
 
         // When I call askForProducts
         Map<String, Integer> products = client.askForProducts();
 
         // Then it should return the expected list of products
-        assertEquals(products, new HashMap<String, Integer>()
-        {{
+        assertThat(new HashMap<String, Integer>() {{
             // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
             put("Coke Zero", 3);
             put("Fanta", 4);
             put("Sprite", 6);
-        }});
+        }}, is(products));
     }
 
     @Test
-    public void testServerStaysUp() throws IOException, EnglishDeserializationError {
-        // Given that I am using a free TCP port
-        Integer port = getFreeTCPPort();
-        // Given that I have the TCP server running in background that port
-        startServer(port);
-        // And that I have a TCP client connected to the server on that port
-        VendingMachineClient client = new VendingMachineClient("localhost", port);
+    public void testServerAcceptsRequestToStop() throws IOException, EnglishDeserializationError, VendingMachineClientDisconnected {
+        // Given that I have a TCP client connected to the server
+        VendingMachineClient client = new VendingMachineClient(HOSTNAME, server.getPort());
 
         // When I call askForProducts
         Map<String, Integer> products1 = client.askForProducts();
-        Map<String, Integer> products2 = client.askForProducts();
 
         // Then it should return the expected list of products
-        assertEquals(products1, new HashMap<String, Integer>()
-        {{
+        assertThat(new HashMap<String, Integer>() {{
             // https://stackoverflow.com/questions/8261075/adding-multiple-entries-to-a-hashmap-at-once-in-one-statement
             put("Coke Zero", 3);
             put("Fanta", 4);
             put("Sprite", 6);
-        }});
-        assertEquals(products1, products2);
+        }}, is(products1));
 
+        // When I ask the server to stop
+        Boolean stopped = client.stopServer();
+        // Then the server should have stopped
+        assertThat(stopped, is(true));
+
+        VendingMachineClientDisconnected error = assertThrows(VendingMachineClientDisconnected.class, () -> client.askForProducts());
+        assertThat(error.getMessage(), is("Client is not connected to " + client.getServerAddress()));
     }
 }

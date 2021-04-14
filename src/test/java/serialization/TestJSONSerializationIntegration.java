@@ -1,0 +1,37 @@
+package serialization;
+
+
+import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+
+public class TestJSONSerializationIntegration {
+    @Test
+    public void serializationWorks() throws DeserializationError, SerializationError {
+        //Given I have a HashMap with one sprite whose id is 4 and a coke whose id is 6 and Coke Zero whose id is 2
+        Map<String, Integer> products = new HashMap<String, Integer>() {{
+            put("Sprite", 4);
+            put("Coke", 6);
+            put("Coke Zero", 2);
+        }};
+
+        //And an instance of JSONSerializer
+        JSONSerializer serializer = new JSONSerializer();
+        //And an instance of JSONDeserializer
+        JSONDeserializer deserializer = new JSONDeserializer();
+
+        //When I serialize the HashMap
+        String items = serializer.serialize(products);
+        //Then it should return a String "4 Sprite, 6 Coke, 2 Coke Zero."
+        assertThat(items, is("{\"Sprite\":4,\"Coke\":6,\"Coke Zero\":2}"));
+        //And when I deserialize the String
+        Map<String, Integer> result = deserializer.deserialize(items);
+        //Then it should match the inital HashMap
+        assertThat(result, is(products));
+    }
+}

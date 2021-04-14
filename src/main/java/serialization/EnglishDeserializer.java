@@ -1,11 +1,11 @@
-package parser;
+package serialization;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EnglishDeserializer implements Deserializer {
+public class EnglishDeserializer implements Deserializer, StateMachine {
 
     Map<String, Integer> items = new HashMap<>();
     List<String> buffer = new ArrayList<String>();
@@ -97,7 +97,7 @@ public class EnglishDeserializer implements Deserializer {
         }
     }
 
-    public EnglishParsingState getCurrentState() {
+    public ParserState getCurrentState() {
         return this.state;
     }
 }
